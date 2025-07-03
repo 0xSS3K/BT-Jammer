@@ -32,8 +32,8 @@ Este script ha sido creado con fines estrictamente educativos y de investigació
 
 1. Clona el repositorio
 ```Bash
-git clone https://github.com/tu-usuario/tu-repositorio.git
-cd tu-repositorio
+git clone https://github.com/0xSS3K/BT-Jammer.git
+cd BT-Jammer
 ```
 
 2. Instala las dependencias
