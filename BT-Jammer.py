@@ -17,19 +17,7 @@ def print_logo():
     ║        Bluetooth DoS Script v2.0         ║
     ╚══════════════════════════════════════════╝
     {C_RESET}""")
-
-def get_disclaimer_approval():
-    """Muestra la advertencia y solicita la aprobación del usuario."""
-    print(f"{C_YELLOW}ADVERTENCIA: Este software se proporciona 'TAL CUAL' sin garantía de ningún tipo.")
-    print("El uso de este software es de completa responsabilidad del usuario final.")
-    print(f"Los desarrolladores no asumen ninguna responsabilidad por el mal uso o los daños causados.{C_RESET}\n")
     
-    try:
-        approval = input("¿Estás de acuerdo y deseas continuar? (s/n) > ")
-        return approval.lower() == 's'
-    except KeyboardInterrupt:
-        return False
-
 def find_bluetooth_adapters():
     """Detecta y devuelve una lista de adaptadores Bluetooth disponibles (ej. hci0, hci1)."""
     try:
